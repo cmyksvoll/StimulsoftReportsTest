@@ -13,7 +13,7 @@ namespace StimulsoftReportsMVC.Controllers
             var requestParams = StiAngularViewer.GetRequestParams(this);
             var options = new StiAngularViewerOptions();
             options.Actions.ViewerEvent = "ViewerEvent";
-            //options.Server.CacheMode = StiServerCacheMode.None;
+            options.Server.CacheMode = StiServerCacheMode.None;
             return StiAngularViewer.ViewerDataResult(requestParams, options);
         }
 
@@ -22,15 +22,16 @@ namespace StimulsoftReportsMVC.Controllers
         {
             var requestParams = StiAngularViewer.GetRequestParams(this);
 
+            var report = StiReport.CreateNewReport();
+            var path = StiAngularHelper.MapPath(this, $"Reports/TestReport.mrt");
+            report.Load(path);
+
             if (requestParams.Action == StiAction.GetReport)
             {
-                var report = StiReport.CreateNewReport();
-                var path = StiAngularHelper.MapPath(this, $"Reports/TestReport.mrt");
-                report.Load(path);
                 return StiAngularViewer.GetReportResult(this, report);
             }
 
-            return StiAngularViewer.ProcessRequestResult(this);
+            return StiAngularViewer.ProcessRequestResult(requestParams, report);
         }
     }
 }
